@@ -113,8 +113,10 @@ function stopSpeech() {
   setActiveCard(null);
 }
 
-function speakLetter(letter, card, onDone) {
-  window.speechSynthesis.cancel();
+function speakLetter(letter, card, onDone, cancelCurrent = true) {
+  if (cancelCurrent) {
+    window.speechSynthesis.cancel();
+  }
   setActiveCard(card);
 
   const utterance = new SpeechSynthesisUtterance(letterSounds[letter] || letter);
@@ -133,7 +135,7 @@ function speakLetter(letter, card, onDone) {
       setActiveCard(null);
     }
     if (onDone) {
-      onDone();
+      window.setTimeout(onDone, 140);
     }
   };
 
@@ -164,7 +166,7 @@ function playNextLetter() {
   const card = alphabetEl.querySelector(`[data-letter="${letter}"]`);
   playAllIndex += 1;
 
-  speakLetter(letter, card, playNextLetter);
+  speakLetter(letter, card, playNextLetter, false);
 }
 
 function playAllLetters() {
