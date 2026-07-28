@@ -43,34 +43,14 @@ const colors = [
   "#fdffb6"
 ];
 
-const letterSounds = {
-  A: "ay",
-  B: "bee",
-  C: "see",
-  D: "dee",
-  E: "eee",
-  F: "ef",
-  G: "gee",
-  H: "aitch",
-  I: "eye",
-  J: "jay",
-  K: "kay",
-  L: "ell",
-  M: "em",
-  N: "en",
-  O: "oh",
-  P: "pee",
-  Q: "queue",
-  R: "are",
-  S: "ess",
-  T: "tee",
-  U: "you",
-  V: "vee",
-  W: "double you",
-  X: "ex",
-  Y: "why",
-  Z: "zee"
-};
+const pronunciationByLetter = letters.reduce((pronunciations, [upper, , pronunciation]) => {
+  pronunciations[upper] = pronunciation;
+  return pronunciations;
+}, {});
+
+const SPEECH_LANGUAGE = "ru-RU";
+const SPEECH_RATE = 0.7;
+const LETTER_PAUSE_MS = 220;
 
 const alphabetEl = document.querySelector("#alphabet");
 const playAllButton = document.querySelector("#play-all");
@@ -80,16 +60,15 @@ let voices = [];
 let activeCard = null;
 let isPlayingAll = false;
 let playAllIndex = 0;
+let playbackId = 0;
 
 function loadVoices() {
   voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
 }
 
-function getEnglishVoice() {
+function getRussianVoice() {
   return (
-    voices.find((voice) => voice.lang === "en-US") ||
-    voices.find((voice) => voice.lang === "en-GB") ||
-    voices.find((voice) => voice.lang && voice.lang.toLowerCase().startsWith("en")) ||
+    voices.find((voice) => voice.lang && voice.lang.toLowerCase().startsWith("ru")) ||
     null
   );
 }
@@ -107,6 +86,7 @@ function setActiveCard(card) {
 }
 
 function stopSpeech() {
+  playbackId += 1;
   isPlayingAll = false;
   playAllIndex = 0;
   window.speechSynthesis.cancel();
@@ -115,32 +95,47 @@ function stopSpeech() {
 
 function speakLetter(letter, card, onDone, cancelCurrent = true) {
   if (cancelCurrent) {
+    playbackId += 1;
     window.speechSynthesis.cancel();
   }
+
+  const currentPlaybackId = playbackId;
   setActiveCard(card);
 
-  const utterance = new SpeechSynthesisUtterance(letterSounds[letter] || letter);
-  utterance.lang = "en-US";
-  utterance.rate = 0.56;
+  const utterance = new SpeechSynthesisUtterance(pronunciationByLetter[letter]);
+  utterance.lang = SPEECH_LANGUAGE;
+  utterance.rate = SPEECH_RATE;
   utterance.pitch = 1;
   utterance.volume = 1;
 
-  const englishVoice = getEnglishVoice();
-  if (englishVoice) {
-    utterance.voice = englishVoice;
-    utterance.lang = englishVoice.lang;
+  const russianVoice = getRussianVoice();
+  if (russianVoice) {
+    utterance.voice = russianVoice;
   }
 
   utterance.onend = () => {
+    if (currentPlaybackId !== playbackId) {
+      return;
+    }
+
     if (!isPlayingAll) {
       setActiveCard(null);
     }
+
     if (onDone) {
-      window.setTimeout(onDone, 140);
+      window.setTimeout(() => {
+        if (currentPlaybackId === playbackId) {
+          onDone();
+        }
+      }, LETTER_PAUSE_MS);
     }
   };
 
   utterance.onerror = () => {
+    if (currentPlaybackId !== playbackId) {
+      return;
+    }
+
     setActiveCard(null);
     isPlayingAll = false;
     if (onDone) {
@@ -171,6 +166,7 @@ function playNextLetter() {
 }
 
 function playAllLetters() {
+  playbackId += 1;
   window.speechSynthesis.cancel();
   isPlayingAll = true;
   playAllIndex = 0;
@@ -192,9 +188,11 @@ function createCard([upper, lower, hint], index) {
   `;
 
   card.addEventListener("click", () => {
+    playbackId += 1;
+    window.speechSynthesis.cancel();
     isPlayingAll = false;
     playAllIndex = 0;
-    speakLetter(upper, card);
+    speakLetter(upper, card, null, false);
   });
 
   return card;
