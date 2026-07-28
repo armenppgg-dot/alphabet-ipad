@@ -44,12 +44,12 @@ const colors = [
 ];
 
 const letterSounds = {
-  A: "ay",
+  A: "aye",
   B: "bee",
   C: "see",
   D: "dee",
-  E: "ee",
-  F: "eff",
+  E: "eee",
+  F: "ef",
   G: "gee",
   H: "aitch",
   I: "eye",
@@ -60,7 +60,7 @@ const letterSounds = {
   N: "en",
   O: "oh",
   P: "pee",
-  Q: "cue",
+  Q: "queue",
   R: "are",
   S: "ess",
   T: "tee",
@@ -121,8 +121,9 @@ function speakLetter(letter, card, onDone, cancelCurrent = true) {
 
   const utterance = new SpeechSynthesisUtterance(letterSounds[letter] || letter);
   utterance.lang = "en-US";
-  utterance.rate = 0.72;
-  utterance.pitch = 1.05;
+  utterance.rate = 0.56;
+  utterance.pitch = 1;
+  utterance.volume = 1;
 
   const englishVoice = getEnglishVoice();
   if (englishVoice) {
