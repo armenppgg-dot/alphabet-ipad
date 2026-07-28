@@ -44,7 +44,7 @@ const colors = [
 ];
 
 const letterSounds = {
-  A: "aye",
+  A: "ay",
   B: "bee",
   C: "see",
   D: "dee",
