@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"
+    >
+    <title>English ABC</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app" aria-labelledby="page-title">
+      <header class="header">
+        <h1 id="page-title">English ABC</h1>
+        <p>Нажмите на букву, чтобы услышать её название.</p>
+        <div class="controls" aria-label="Управление воспроизведением">
+          <button id="play-all" type="button">Проиграть весь алфавит</button>
+          <button id="stop" type="button">Остановить</button>
+        </div>
+      </header>
+
+      <section id="alphabet" class="alphabet" aria-label="Английский алфавит"></section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
