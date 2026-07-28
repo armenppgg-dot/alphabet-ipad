@@ -43,6 +43,35 @@ const colors = [
   "#fdffb6"
 ];
 
+const letterSounds = {
+  A: "ay",
+  B: "bee",
+  C: "see",
+  D: "dee",
+  E: "ee",
+  F: "eff",
+  G: "gee",
+  H: "aitch",
+  I: "eye",
+  J: "jay",
+  K: "kay",
+  L: "ell",
+  M: "em",
+  N: "en",
+  O: "oh",
+  P: "pee",
+  Q: "cue",
+  R: "are",
+  S: "ess",
+  T: "tee",
+  U: "you",
+  V: "vee",
+  W: "double you",
+  X: "ex",
+  Y: "why",
+  Z: "zee"
+};
+
 const alphabetEl = document.querySelector("#alphabet");
 const playAllButton = document.querySelector("#play-all");
 const stopButton = document.querySelector("#stop");
@@ -88,7 +117,7 @@ function speakLetter(letter, card, onDone) {
   window.speechSynthesis.cancel();
   setActiveCard(card);
 
-  const utterance = new SpeechSynthesisUtterance(letter);
+  const utterance = new SpeechSynthesisUtterance(letterSounds[letter] || letter);
   utterance.lang = "en-US";
   utterance.rate = 0.72;
   utterance.pitch = 1.05;
