@@ -102,7 +102,7 @@ function speakLetter(letter, card, onDone, cancelCurrent = true) {
   const currentPlaybackId = playbackId;
   setActiveCard(card);
 
-  const speechText = letter === "V" ? "ви" : pronunciationByLetter[letter];
+  const speechText = letter === "V" ? "вии" : pronunciationByLetter[letter];
   const utterance = new SpeechSynthesisUtterance(speechText);
   utterance.lang = SPEECH_LANGUAGE;
   utterance.rate = SPEECH_RATE;
